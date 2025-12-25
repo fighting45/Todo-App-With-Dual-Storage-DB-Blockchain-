@@ -1,10 +1,18 @@
 {
   "name": "todo-app-with-dual-storage-db-blockchain-",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Advanced Todo App with Dual Storage (MongoDB + Blockchain) - MERN Stack",
+  "main": "dist/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev:debug": "ts-node-dev --inspect --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "type-check": "tsc --noEmit",
+    "test": "echo \"Tests will be added in Phase 7\""
   },
   "repository": {
     "type": "git",
