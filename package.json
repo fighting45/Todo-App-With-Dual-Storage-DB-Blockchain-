@@ -1,0 +1,23 @@
+{
+  "name": "todo-app-with-dual-storage-db-blockchain-",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fighting45/Todo-App-With-Dual-Storage-DB-Blockchain-.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fighting45/Todo-App-With-Dual-Storage-DB-Blockchain-/issues"
+  },
+  "homepage": "https://github.com/fighting45/Todo-App-With-Dual-Storage-DB-Blockchain-#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
