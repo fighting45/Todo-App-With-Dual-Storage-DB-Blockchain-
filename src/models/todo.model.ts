@@ -133,7 +133,7 @@ todoSchema.index({ blockchainSyncStatus: 1, syncRetryCount: 1 });
 todoSchema.index({ userId: 1, createdAt: -1 });
 
 // Update completedAt when isCompleted changes
-todoSchema.pre('save', function (next) {
+todoSchema.pre('save', function () {
   if (this.isModified('isCompleted')) {
     if (this.isCompleted) {
       this.completedAt = new Date();
@@ -141,7 +141,6 @@ todoSchema.pre('save', function (next) {
       this.completedAt = undefined;
     }
   }
-  return next();
 });
 
 export const Todo = mongoose.model<ITodo>('Todo', todoSchema);
