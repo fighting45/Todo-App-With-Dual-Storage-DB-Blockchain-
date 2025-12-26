@@ -5,50 +5,12 @@ import { asyncHandler } from '../middleware/async-handler.middleware';
 import { RegisterDTO } from '../dtos/auth/register.dto';
 import { LoginDTO } from '../dtos/auth/login.dto';
 
-/**
- * TYPESCRIPT EXPLANATION:
- *
- * Request<ParamsDictionary, any, RegisterDTO>
- * This tells Express what type the request body is
- *
- * Breaking it down:
- * - Request: Express request object
- * - First param: URL params (we don't use here)
- * - Second param: Response body type (any is fine)
- * - Third param: Request body type (RegisterDTO!)
- *
- * After validation middleware runs:
- * - req.body is guaranteed to be RegisterDTO
- * - TypeScript gives us autocomplete!
- */
-
 export class AuthController {
   private authService: AuthService;
 
   constructor() {
-    /**
-     * Create instance of AuthService
-     * Each controller method will use this
-     */
     this.authService = new AuthService();
 
-    /**
-     * IMPORTANT: Bind methods to 'this'
-     *
-     * Why?
-     * When we use these methods as route handlers,
-     * JavaScript loses the 'this' context
-     *
-     * Example without binding:
-     *   router.post('/register', authController.register)
-     *   // Inside register(), 'this' is undefined!
-     *
-     * Example with binding:
-     *   router.post('/register', authController.register)
-     *   // Inside register(), 'this' refers to the controller
-     *
-     * We bind in constructor so we only do it once
-     */
     this.register = this.register.bind(this);
     this.login = this.login.bind(this);
     this.refreshToken = this.refreshToken.bind(this);
