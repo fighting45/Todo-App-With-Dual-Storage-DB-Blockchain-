@@ -12,8 +12,8 @@ export const registerSchema = z.object({
   email: z
     .string() // Must be a string
     .email('Invalid email format') // Must be valid email
-    .toLowerCase() // Convert to lowercase
-    .trim(), // Remove whitespace
+    .toLowerCase()
+    .trim(),
 
   // Username field
   username: z
