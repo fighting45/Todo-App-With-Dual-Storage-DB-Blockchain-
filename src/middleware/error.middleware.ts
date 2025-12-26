@@ -9,7 +9,7 @@ import mongoose from 'mongoose';
  * Handle Zod validation errors
  */
 const handleZodError = (error: ZodError): ApiError => {
-  const errors = error.errors.map((err) => ({
+  const errors = error.issues.map((err: any) => ({
     field: err.path.join('.'),
     message: err.message,
   }));

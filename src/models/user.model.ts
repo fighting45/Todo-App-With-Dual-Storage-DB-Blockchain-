@@ -99,7 +99,7 @@ const userSchema = new Schema<IUser>(
   {
     timestamps: true,
     toJSON: {
-      transform: (_doc, ret) => {
+      transform: (_doc, ret: any) => {
         delete ret.password;
         delete ret.refreshTokens;
         delete ret.__v;
@@ -122,9 +122,9 @@ userSchema.pre('save', async function (next) {
   try {
     const salt = await bcrypt.genSalt(CONSTANTS.BCRYPT_ROUNDS);
     this.password = await bcrypt.hash(this.password, salt);
-    next();
+    return next();
   } catch (error: any) {
-    next(error);
+    return next(error);
   }
 });
 
@@ -156,7 +156,7 @@ userSchema.methods.addRefreshToken = async function (
     this.refreshTokens = this.refreshTokens.slice(-5);
   }
 
-  await this.save();
+  return this.save();
 };
 
 // Remove refresh token method
@@ -170,7 +170,7 @@ userSchema.methods.removeRefreshToken = async function (token: string): Promise<
     }
   }
 
-  await this.save();
+  return this.save();
 };
 
 export const User = mongoose.model<IUser>('User', userSchema);

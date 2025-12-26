@@ -118,7 +118,7 @@ const todoSchema = new Schema<ITodo>(
   {
     timestamps: true,
     toJSON: {
-      transform: (_doc, ret) => {
+      transform: (_doc, ret: any) => {
         delete ret.__v;
         return ret;
       },
@@ -141,7 +141,7 @@ todoSchema.pre('save', function (next) {
       this.completedAt = undefined;
     }
   }
-  next();
+  return next();
 });
 
 export const Todo = mongoose.model<ITodo>('Todo', todoSchema);
