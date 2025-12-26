@@ -64,7 +64,7 @@ export class UserRepository {
      * User.create() does:
      * 1. Creates a new document
      * 2. Runs validations
-     * 3. Runs pre-save hooks (remember: hashes password!)
+     * 3. Runs pre-save hooks (hashes password!)
      * 4. Saves to database
      * 5. Returns the saved document
      */
