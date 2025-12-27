@@ -1,10 +1,8 @@
-import { HardhatUserConfig } from 'hardhat/config';
-import '@nomicfoundation/hardhat-toolbox';
-import * as dotenv from 'dotenv';
+require('@nomicfoundation/hardhat-toolbox');
+require('dotenv').config();
 
-dotenv.config();
-
-const config: HardhatUserConfig = {
+/** @type import('hardhat/config').HardhatUserConfig */
+module.exports = {
   solidity: {
     version: '0.8.27',
     settings: {
@@ -35,5 +33,3 @@ const config: HardhatUserConfig = {
     target: 'ethers-v6',
   },
 };
-
-export default config;
