@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import { config } from './config';
 import { errorMiddleware, notFoundMiddleware } from './middleware';
 import logger from './utils/logger';
+import routes from './routes';
 
 const app: Application = express();
 
@@ -46,8 +47,8 @@ app.get('/health', (_req, res) => {
   });
 });
 
-// API routes will be added here
-// app.use('/api/v1', routes);
+// API routes
+app.use('/api', routes);
 
 // 404 handler
 app.use(notFoundMiddleware);

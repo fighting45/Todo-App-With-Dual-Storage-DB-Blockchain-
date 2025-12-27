@@ -30,11 +30,12 @@ export class AuthController {
     ApiResponse.success(res, result, 'Login successful');
   });
 
-  refreshToken = asyncHandler(async (req: Request, res: Response) => {
+  refreshToken = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const { refreshToken } = req.body;
 
     if (!refreshToken) {
-      return ApiResponse.error(res, 'Refresh token is required', 400);
+      ApiResponse.error(res, 'Refresh token is required', 400);
+      return;
     }
 
     const result = await this.authService.refreshAccessToken(refreshToken);
@@ -42,12 +43,13 @@ export class AuthController {
     ApiResponse.success(res, result, 'Token refreshed successfully');
   });
 
-  logout = asyncHandler(async (req: Request, res: Response) => {
+  logout = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const userId = req.user!._id.toString();
     const { refreshToken } = req.body;
 
     if (!refreshToken) {
-      return ApiResponse.error(res, 'Refresh token is required', 400);
+      ApiResponse.error(res, 'Refresh token is required', 400);
+      return;
     }
 
     await this.authService.logout(userId, refreshToken);

@@ -3,7 +3,7 @@ import { ApiError } from '../utils/api-error';
 import { UserRole } from '../types/enums';
 
 export const rbac = (allowedRoles: UserRole[]) => {
-  return (req: Request, res: Response, next: NextFunction): void => {
+  return (req: Request, _res: Response, next: NextFunction): void => {
     if (!req.user) {
       return next(ApiError.unauthorized('Authentication required', 'NOT_AUTHENTICATED'));
     }

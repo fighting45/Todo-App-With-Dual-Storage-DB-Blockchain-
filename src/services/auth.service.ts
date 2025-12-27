@@ -7,27 +7,12 @@ import { config } from '../config';
 import { IUser } from '../models/user.model';
 import { UserRole } from '../types/enums';
 
-/**
- * AUTH SERVICE
- *
- * It contains all the business logic for:
- * - Registration
- * - Login
- * - Token generation
- * - Token refresh
- */
-
 interface TokenPayload {
   userId: string; // User's ID
   email: string; // User's email
   role: UserRole; // User's role (for authorization)
 }
 
-/**
- * INTERFACE for Auth Response
- *
- * This defines what we return after successful login/register
- */
 interface AuthResponse {
   user: {
     id: string;
@@ -76,12 +61,7 @@ export class AuthService {
     const { accessToken, refreshToken } = this.generateTokens(user);
 
     // Step 5: Store refresh token in database
-    /**
-     * Why store refresh token?
-     * - So we can revoke it later (logout)
-     * - So we can limit number of active sessions
-     * - Security: Can check if token is still valid
-     */
+
     const refreshTokenExpiry = this.getRefreshTokenExpiry();
     await user.addRefreshToken(refreshToken, refreshTokenExpiry);
 
@@ -139,12 +119,12 @@ export class AuthService {
       role: user.role,
     };
 
-    const accessToken = jwt.sign(payload, config.jwt.secret, {
-      expiresIn: config.jwt.expiresIn,
+    const accessToken = jwt.sign(payload, config.jwt.secret as string, {
+      expiresIn: config.jwt.expiresIn as string,
     });
 
-    const refreshToken = jwt.sign(payload, config.jwt.refreshSecret, {
-      expiresIn: config.jwt.refreshExpiresIn,
+    const refreshToken = jwt.sign(payload, config.jwt.refreshSecret as string, {
+      expiresIn: config.jwt.refreshExpiresIn as string,
     });
 
     return { accessToken, refreshToken };
@@ -183,8 +163,8 @@ export class AuthService {
           email: user.email,
           role: user.role,
         },
-        config.jwt.secret,
-        { expiresIn: config.jwt.expiresIn }
+        config.jwt.secret as string,
+        { expiresIn: config.jwt.expiresIn as string }
       );
 
       return { accessToken: newAccessToken };

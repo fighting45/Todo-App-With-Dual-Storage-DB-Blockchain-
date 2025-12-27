@@ -1,5 +1,4 @@
 import { User, IUser } from '../models/user.model';
-import { UserRole } from '../types/enums';
 import mongoose from 'mongoose';
 
 export class UserRepository {
