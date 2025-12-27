@@ -1,6 +1,15 @@
 require('@nomicfoundation/hardhat-toolbox');
 require('dotenv').config();
 
+// Register ts-node to handle TypeScript test files
+require('ts-node').register({
+  transpileOnly: true,
+  files: true,
+  compilerOptions: {
+    module: 'commonjs',
+  },
+});
+
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: {
@@ -31,5 +40,9 @@ module.exports = {
   typechain: {
     outDir: 'blockchain/typechain-types',
     target: 'ethers-v6',
+  },
+  mocha: {
+    timeout: 40000,
+    require: ['ts-node/register'],
   },
 };
