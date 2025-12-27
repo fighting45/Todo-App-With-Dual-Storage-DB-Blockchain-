@@ -5,7 +5,7 @@ import { HashService } from './hash.service';
 import { CreateTodoDTO } from '../dtos/todo/create-todo.dto';
 import { UpdateTodoDTO } from '../dtos/todo/update-todo.dto';
 import { ApiError } from '../utils/api-error';
-import { logger } from '../utils/logger';
+import logger from '../utils/logger';
 import { ITodo } from '../models/todo.model';
 import { BlockchainSyncStatus, TodoPriority } from '../types/enums';
 

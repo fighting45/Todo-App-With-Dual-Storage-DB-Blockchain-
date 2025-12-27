@@ -1,6 +1,6 @@
 import { ethers, Contract, Wallet } from 'ethers';
 import { config } from '../config';
-import { logger } from '../utils/logger';
+import logger from '../utils/logger';
 import TodoRegistryABI from '../../blockchain/artifacts/blockchain/contracts/TodoRegistry.sol/TodoRegistry.json';
 
 /**
