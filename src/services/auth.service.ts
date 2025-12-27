@@ -119,13 +119,13 @@ export class AuthService {
       role: user.role,
     };
 
-    const accessToken = jwt.sign(payload, config.jwt.secret as string, {
-      expiresIn: config.jwt.expiresIn as string,
-    });
+    const accessToken = jwt.sign(payload, config.jwt.secret, {
+      expiresIn: config.jwt.expiresIn || '15m',
+    } as jwt.SignOptions);
 
-    const refreshToken = jwt.sign(payload, config.jwt.refreshSecret as string, {
-      expiresIn: config.jwt.refreshExpiresIn as string,
-    });
+    const refreshToken = jwt.sign(payload, config.jwt.refreshSecret, {
+      expiresIn: config.jwt.refreshExpiresIn || '7d',
+    } as jwt.SignOptions);
 
     return { accessToken, refreshToken };
   }
@@ -163,8 +163,8 @@ export class AuthService {
           email: user.email,
           role: user.role,
         },
-        config.jwt.secret as string,
-        { expiresIn: config.jwt.expiresIn as string }
+        config.jwt.secret,
+        { expiresIn: config.jwt.expiresIn || '15m' } as jwt.SignOptions
       );
 
       return { accessToken: newAccessToken };
