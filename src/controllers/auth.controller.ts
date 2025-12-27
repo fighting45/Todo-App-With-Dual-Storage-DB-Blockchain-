@@ -18,92 +18,22 @@ export class AuthController {
     this.getCurrentUser = this.getCurrentUser.bind(this);
   }
 
-  /**
-   * REGISTER NEW USER
-   *
-   * POST /api/v1/auth/register
-   *
-   * Flow:
-   * 1. Validation middleware validates req.body
-   * 2. This controller method is called
-   * 3. We call authService.register()
-   * 4. We send success response
-   *
-   * If error occurs:
-   * - asyncHandler catches it
-   * - Error middleware handles it
-   */
   register = asyncHandler(async (req: Request, res: Response) => {
-    /**
-     * req.body is now RegisterDTO (thanks to validation middleware)
-     * TypeScript knows this and gives us autocomplete!
-     */
     const result = await this.authService.register(req.body as RegisterDTO);
 
-    /**
-     * ApiResponse.created() sends:
-     * - Status: 201 (Created)
-     * - Body: { success: true, data: result, message: '...' }
-     *
-     * Why not just res.json()?
-     * - Consistent response format across all endpoints
-     * - Automatically adds metadata (timestamp, etc.)
-     * - Centralized response handling
-     */
     ApiResponse.created(res, result, 'User registered successfully');
   });
 
-  /**
-   * LOGIN USER
-   *
-   * POST /api/v1/auth/login
-   *
-   * Similar to register, but:
-   * - Returns 200 (OK) instead of 201
-   * - Different service method
-   */
   login = asyncHandler(async (req: Request, res: Response) => {
     const result = await this.authService.login(req.body as LoginDTO);
 
-    /**
-     * ApiResponse.success() sends:
-     * - Status: 200 (OK)
-     * - Body: { success: true, data: result }
-     */
     ApiResponse.success(res, result, 'Login successful');
   });
 
-  /**
-   * REFRESH ACCESS TOKEN
-   *
-   * POST /api/v1/auth/refresh-token
-   * Body: { refreshToken: string }
-   *
-   * When access token expires, client sends refresh token
-   * to get a new access token
-   */
   refreshToken = asyncHandler(async (req: Request, res: Response) => {
-    /**
-     * TYPESCRIPT NOTE:
-     * req.body.refreshToken might not exist
-     * TypeScript doesn't know the shape of req.body here
-     *
-     * We could create a RefreshTokenDTO, but for simplicity,
-     * we just extract it and let the service validate
-     */
     const { refreshToken } = req.body;
 
-    /**
-     * Simple validation
-     * If no token provided, service will throw error anyway,
-     * but this gives a clearer error message
-     */
     if (!refreshToken) {
-      /**
-       * We could throw ApiError.badRequest() here
-       * But for demo, we'll just let it pass to service
-       * Service will handle the error
-       */
       return ApiResponse.error(res, 'Refresh token is required', 400);
     }
 
@@ -112,30 +42,7 @@ export class AuthController {
     ApiResponse.success(res, result, 'Token refreshed successfully');
   });
 
-  /**
-   * LOGOUT USER
-   *
-   * POST /api/v1/auth/logout
-   * Headers: Authorization: Bearer <access-token>
-   * Body: { refreshToken: string }
-   *
-   * This endpoint requires authentication!
-   * User must be logged in to log out
-   *
-   * TYPESCRIPT NOTE:
-   * req.user comes from auth middleware (we'll create this next)
-   * We added it to Express.Request type in express.d.ts
-   */
   logout = asyncHandler(async (req: Request, res: Response) => {
-    /**
-     * req.user is added by auth middleware
-     * If user is not authenticated, middleware blocks the request
-     * So here, we can safely assume req.user exists
-     *
-     * TYPESCRIPT:
-     * We use ! (non-null assertion) to tell TypeScript
-     * "trust me, this exists"
-     */
     const userId = req.user!._id.toString();
     const { refreshToken } = req.body;
 
@@ -145,30 +52,10 @@ export class AuthController {
 
     await this.authService.logout(userId, refreshToken);
 
-    /**
-     * For logout, we don't return any data
-     * Just a success message
-     */
     ApiResponse.success(res, null, 'Logout successful');
   });
 
-  /**
-   * GET CURRENT USER
-   *
-   * GET /api/v1/auth/me
-   * Headers: Authorization: Bearer <access-token>
-   *
-   * Returns the currently logged-in user's information
-   * Useful for frontend to get user data on page load
-   */
   getCurrentUser = asyncHandler(async (req: Request, res: Response) => {
-    /**
-     * req.user is populated by auth middleware
-     * We just return it (without sensitive data like password)
-     *
-     * The user object from middleware already has password excluded
-     * (remember select: false in the model)
-     */
     const user = {
       id: req.user!._id.toString(),
       email: req.user!.email,
@@ -182,86 +69,3 @@ export class AuthController {
     ApiResponse.success(res, user, 'User retrieved successfully');
   });
 }
-
-/**
- * HOW THIS WILL BE USED IN ROUTES:
- *
- * import { AuthController } from './controllers/auth.controller';
- *
- * const authController = new AuthController();
- *
- * router.post('/register',
- *   validate(registerSchema, 'body'),    // Validate first
- *   authController.register              // Then handle
- * );
- *
- * router.post('/login',
- *   validate(loginSchema, 'body'),
- *   authController.login
- * );
- *
- * router.post('/refresh-token',
- *   authController.refreshToken
- * );
- *
- * router.post('/logout',
- *   authMiddleware,                      // Must be authenticated
- *   authController.logout
- * );
- *
- * router.get('/me',
- *   authMiddleware,                      // Must be authenticated
- *   authController.getCurrentUser
- * );
- */
-
-/**
- * KEY TYPESCRIPT CONCEPTS:
- *
- * 1. METHOD BINDING
- *    - this.method = this.method.bind(this)
- *    - Preserves 'this' context in route handlers
- *
- * 2. NON-NULL ASSERTION (!)
- *    - req.user!._id
- *    - Tells TypeScript "this definitely exists"
- *    - Use carefully! Only when you're sure
- *
- * 3. OPTIONAL CHAINING (?.)
- *    - req.user?.firstName
- *    - Safely access property that might not exist
- *    - Returns undefined if property doesn't exist
- *
- * 4. TYPE CASTING (as)
- *    - req.body as RegisterDTO
- *    - After validation, we know the type
- *    - Helps TypeScript understand
- *
- * 5. ASYNC HANDLER WRAPPER
- *    - asyncHandler(async (req, res) => { ... })
- *    - Catches errors automatically
- *    - No try-catch needed!
- */
-
-/**
- * WHY CLASSES FOR CONTROLLERS?
- *
- * We could use plain functions:
- *   export const register = async (req, res) => { ... }
- *
- * But classes are better because:
- * 1. Can share authService instance
- * 2. Can have private helper methods
- * 3. Can bind methods once in constructor
- * 4. More organized for larger controllers
- * 5. Easier to test (can mock dependencies)
- *
- * JAVASCRIPT DEVELOPERS:
- * This is similar to:
- *   const authController = {
- *     register: async (req, res) => { ... },
- *     login: async (req, res) => { ... }
- *   }
- *
- * But with proper encapsulation and type safety!
- */

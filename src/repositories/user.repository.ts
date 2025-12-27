@@ -2,22 +2,10 @@ import { User, IUser } from '../models/user.model';
 import { UserRole } from '../types/enums';
 import mongoose from 'mongoose';
 
-/**
- * This class handles ALL database operations for users
- * as a "User Database Helper"
- */
-
 export class UserRepository {
   //Find a user by email
 
   async findByEmail(email: string): Promise<IUser | null> {
-    /**
-     * As we set 'select: false' on password in the model
-     * This means by default, password is NOT included in queries
-     *
-     * But for login, we NEED the password to compare
-     * So we use .select('+password') to explicitly include it
-     */
     return User.findOne({ email, isDeleted: false }).select('+password');
   }
 
@@ -31,14 +19,6 @@ export class UserRepository {
     return User.findOne({ _id: id, isDeleted: false });
   }
 
-  /**
-   * MONGODB QUERY:
-   * $or: [{ email }, { username: email }]
-   *
-   * This means: "Find a user where email matches OR username matches"
-   * We use 'email' variable for both because the login form field
-   * accepts either email or username
-   */
   async findByEmailOrUsername(email: string): Promise<IUser | null> {
     return User.findOne({
       $or: [{ email }, { username: email }],
@@ -46,19 +26,6 @@ export class UserRepository {
     }).select('+password');
   }
 
-  /**
-   * Create a new user
-   *
-   * Partial<IUser>:
-   * - Take the IUser interface
-   * - Make ALL properties optional
-   * - We can pass any subset of IUser fields
-   *
-   * Why Partial?
-   * - We don't need to provide _id (MongoDB creates it)
-   * - We don't need to provide timestamps (Mongoose creates them)
-   * - We only provide the fields we want to set
-   */
   async create(userData: Partial<IUser>): Promise<IUser> {
     /**
      * User.create() does:

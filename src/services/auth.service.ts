@@ -93,29 +93,12 @@ export class AuthService {
     };
   }
 
-  /**
-   * LOGIN USER
-   *
-   * Steps:
-   * 1. Find user by email or username
-   * 2. Verify password
-   * 3. Generate tokens
-   * 4. Store refresh token
-   * 5. Update last login time
-   * 6. Return user data + tokens
-   *
-   */
   async login(data: LoginDTO): Promise<AuthResponse> {
     // Step 1: Find user (by email OR username)
 
     const user = await this.userRepository.findByEmailOrUsername(data.email);
 
     if (!user) {
-      /**
-       * Security best practice:
-       * Don't reveal whether email exists or password is wrong
-       * Always use the same error message
-       */
       throw ApiError.unauthorized('Invalid credentials');
     }
 
@@ -172,12 +155,6 @@ export class AuthService {
    *
    * When access token expires, use refresh token to get a new one
    *
-   * Steps:
-   * 1. Verify refresh token (check signature)
-   * 2. Find user
-   * 3. Check if refresh token is in database (not revoked)
-   * 4. Generate new access token
-   * 5. Return new access token
    */
   async refreshAccessToken(refreshToken: string): Promise<{ accessToken: string }> {
     try {
