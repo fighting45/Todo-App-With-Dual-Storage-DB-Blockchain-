@@ -49,6 +49,21 @@ Instant Response        Async Sync
 
 ## API Documentation
 
+### Interactive API Documentation (Swagger)
+
+**Access the full interactive API documentation at:**
+
+```
+http://localhost:3000/api-docs
+```
+
+**Features:**
+- Try all endpoints directly in your browser
+- Auto-generated request/response examples
+- Built-in authentication (JWT token support)
+- Complete schema documentation
+- No Postman needed for testing
+
 ### Base URL
 
 ```
@@ -302,6 +317,6 @@ MIT
 
 ---
 
-**Last Updated**: December 27, 2025
+**Last Updated**: December 30, 2025
 **Version**: 1.0.0
 **Status**: Production Ready (Local), Testnet Ready
