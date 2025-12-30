@@ -58,6 +58,7 @@ http://localhost:3000/api-docs
 ```
 
 **Features:**
+
 - Try all endpoints directly in your browser
 - Auto-generated request/response examples
 - Built-in authentication (JWT token support)
@@ -309,7 +310,7 @@ contract TodoRegistry {
 - ✅ Phase 2: Todo CRUD API
 - ✅ Phase 3: Blockchain Integration
 - ✅ Phase 4: Local Testing Complete
-- ⏳ Phase 5: Sepolia Testnet Deployment (Pending)
+- ⏳ Phase 5: Sepolia Testnet Deployment
 
 ## License
 
