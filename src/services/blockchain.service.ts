@@ -1,7 +1,8 @@
 import { ethers, Contract, Wallet } from 'ethers';
 import { config } from '../config';
 import logger from '../utils/logger';
-import TodoRegistryABI from '../../blockchain/artifacts/blockchain/contracts/TodoRegistry.sol/TodoRegistry.json';
+import { getContractConfig } from '../config/contracts';
+import { getNetworkConfig } from '../config/networks';
 
 /**
  * BlockchainService
@@ -13,22 +14,26 @@ export class BlockchainService {
   private wallet: Wallet;
 
   constructor() {
-    // Initialize provider (connection to blockchain)
-    this.provider = new ethers.JsonRpcProvider(config.blockchain.rpcUrl || 'http://127.0.0.1:8545');
+    // Get network configuration
+    const network = config.blockchain.network || 'sepolia';
+    const networkConfig = getNetworkConfig(network);
 
-    // Initialize wallet (account to sign transactions)
+    // Get contract configuration
+    const contractConfig = getContractConfig(network);
+
+    // Initialize provider
+    this.provider = new ethers.JsonRpcProvider(networkConfig.rpcUrl);
+
+    // Initialize wallet
     this.wallet = new ethers.Wallet(config.blockchain.privateKey, this.provider);
 
-    // Initialize contract instance
-    this.contract = new ethers.Contract(
-      config.blockchain.contractAddress,
-      TodoRegistryABI.abi,
-      this.wallet
-    );
+    // Initialize contract instance with hardcoded ABI and address
+    this.contract = new ethers.Contract(contractConfig.address, contractConfig.abi, this.wallet);
 
     logger.info('Blockchain service initialized', {
-      network: config.blockchain.network,
-      contract: config.blockchain.contractAddress,
+      network: networkConfig.name,
+      chainId: networkConfig.chainId,
+      contract: contractConfig.address,
     });
   }
 
@@ -213,6 +218,8 @@ export class BlockchainService {
    * Get contract address
    */
   getContractAddress(): string {
-    return config.blockchain.contractAddress;
+    const network = config.blockchain.network || 'sepolia';
+    const contractConfig = getContractConfig(network);
+    return contractConfig.address;
   }
 }
